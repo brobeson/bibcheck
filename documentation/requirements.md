@@ -18,7 +18,7 @@ John Owens.
 
 | Status | Requirement |
 |:---|:---|
-| | Separate author initials with spaces. |
+| in progress | Separate author initials with spaces. |
 | | Wrap lowercase hyphenated names in braces. |
 | | Wrap all-capital abbreviations in the title in braces. |
 | | Do not wrap the entire title in double braces. |
