@@ -9,19 +9,20 @@ import bibcheck.reporters
 import bibcheck.checks.author_initials as author_initials
 
 
+BIBTEX_FILE = "bibtex"
+LATEX_FILE = "latex"
+
+
 def main():
     """The main entry point for the application."""
     arguments = _parse_command_line()
     try:
         files_to_check = _get_files_to_check(arguments.path)
     except FileNotFoundError as exception:
-        sys.exit(exception.what)
-    reporter = bibcheck.reporters.DefaultReporter()
-    issue = author_initials.check(
-        "  author={Robeson, B.J.}", bibcheck.issue.Context("references.bib", 25)
-    )
-    if issue:
-        reporter.report_issue(issue)
+        sys.exit(str(exception))
+    if not files_to_check:
+        sys.exit(f"No LaTeX, BibTeX, or BibLaTeX files are in {arguments.path}.")
+    _check_files(files_to_check)
     sys.exit(0)
 
 
@@ -62,6 +63,35 @@ def _get_files_to_check(path_argument: str) -> list:
         files.sort()
         return files
     return [path_argument]
+
+
+def _check_files(files: list) -> None:
+    reporter = bibcheck.reporters.DefaultReporter()
+    for file_path in files:
+        try:
+            file_type = _get_file_type(file_path)
+            with open(file_path) as file_:
+                lines = file_.readlines()
+            if file_type == BIBTEX_FILE:
+                _check_bibtex_lines(reporter, lines, file_path)
+        except ValueError as exception:
+            print(exception)
+
+
+def _check_bibtex_lines(reporter, lines, file_path) -> None:
+    for line_number, line in enumerate(lines):
+        issue = author_initials.check(line, bibcheck.issue.Context(file_path, line_number))
+        if issue:
+            reporter.report_issue(issue)
+
+
+def _get_file_type(file_path: str) -> str:
+    _, extension = os.path.splitext(file_path)
+    if extension == ".bib":
+        return BIBTEX_FILE
+    if extension == ".tex":
+        return LATEX_FILE
+    raise ValueError(f"{file_path} is not a known file type.")
 
 
 if __name__ == "__main__":

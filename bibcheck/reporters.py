@@ -20,4 +20,4 @@ class DefaultReporter:  # pylint: disable=too-few-public-methods
 
         :param bibcheck.issue.Issue issue: The issue to report.
         """
-        print(issue.file_path, issue.first_line, issue.message, sep=":")
+        print(issue.file_path, issue.line_number, issue.message, sep=":")
