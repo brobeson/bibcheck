@@ -72,4 +72,6 @@ class CheckTest(unittest.TestCase):
                 self.assertIsNotNone(issue)
                 self.assertEqual(issue.file_path, "references.bib")
                 self.assertEqual(issue.line_number, 11)
-                self.assertEqual(issue.message, "Author initials must be separated by a space.")
+                self.assertEqual(
+                    issue.message, "Author initials must be separated by a space."
+                )

@@ -3,6 +3,7 @@
 
 class Context:
     """Context with in the file for a line."""
+
     def __init__(self, file_path: str, line_number: int) -> None:
         self.__file_path = file_path
         self.__line_number = line_number
