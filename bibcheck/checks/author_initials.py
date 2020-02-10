@@ -4,7 +4,7 @@ import re
 
 import bibcheck.issue
 
-INITIALS_EXPRESSION = re.compile(r"[A-Z]\.?[A-Z]\.?")
+INITIALS_EXPRESSION = re.compile(r'author\s*=\s*[{"].*[A-Z]\.?[A-Z]\.?.*["}]')
 
 
 class Issue(bibcheck.issue.Issue):
@@ -27,9 +27,8 @@ def check(line: str, context: bibcheck.issue.Context):
     :return: An issue if the given ``line`` fails the check.
     :rtype: bibcheck.checks.author_initials.Issue
     """
-    if "author" in line:
-        if INITIALS_EXPRESSION.search(line):
-            return bibcheck.checks.author_initials.Issue(
-                context.file_path, context.line_number
-            )
+    if INITIALS_EXPRESSION.search(line):
+        return bibcheck.checks.author_initials.Issue(
+            context.file_path, context.line_number
+        )
     return None

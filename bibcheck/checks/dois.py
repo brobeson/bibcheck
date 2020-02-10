@@ -27,7 +27,5 @@ def check(line: str, context: bibcheck.issue.Context):
     :rtype: bibcheck.checks.dois.Issue
     """
     if DOI_URL_REGEX.search(line):
-        return bibcheck.checks.dois.Issue(
-            context.file_path, context.line_number
-        )
+        return bibcheck.checks.dois.Issue(context.file_path, context.line_number)
     return None

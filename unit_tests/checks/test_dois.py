@@ -24,10 +24,7 @@ class CheckTest(unittest.TestCase):
         cases = [
             # (test line, test context)
             ("  title={Hamlet},", bibcheck.issue.Context("references.bib", 10)),
-            (
-                "  doi={10.1109/5.771073},",
-                bibcheck.issue.Context("references.bib", 11),
-            ),
+            ("  doi={10.1109/5.771073},", bibcheck.issue.Context("references.bib", 11)),
         ]
         for case in cases:
             with self.subTest():
