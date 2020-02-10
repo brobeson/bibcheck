@@ -79,7 +79,7 @@ def _check_files(files: list) -> None:
 
 
 def _check_bibtex_lines(reporter, lines, file_path) -> None:
-    for line_number, line in enumerate(lines):
+    for line_number, line in enumerate(lines, start=1):
         issue = author_initials.check(
             line, bibcheck.issue.Context(file_path, line_number)
         )
