@@ -65,6 +65,18 @@ class CheckTest(unittest.TestCase):
                 "  title={Hamlet}, author={Shakespeare, W.A.},",
                 bibcheck.issue.Context("references.bib", 11),
             ),
+            (
+                "  title={Hamlet}, author={Shakespeare, WA.},",
+                bibcheck.issue.Context("references.bib", 11),
+            ),
+            (
+                "  title={Hamlet}, author={Shakespeare, W.A},",
+                bibcheck.issue.Context("references.bib", 11),
+            ),
+            (
+                "  title={Hamlet}, author={Shakespeare, WA},",
+                bibcheck.issue.Context("references.bib", 11),
+            ),
         ]
         for case in cases:
             with self.subTest():

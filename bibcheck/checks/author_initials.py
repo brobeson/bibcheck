@@ -4,7 +4,7 @@ import re
 
 import bibcheck.issue
 
-INITIALS_EXPRESSION = re.compile(r"[A-Z]\.[A-Z]\.")
+INITIALS_EXPRESSION = re.compile(r"[A-Z]\.?[A-Z]\.?")
 
 
 class Issue(bibcheck.issue.Issue):
