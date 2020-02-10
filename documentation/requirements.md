@@ -18,12 +18,13 @@ John Owens.
 
 | Status | Requirement |
 |:---|:---|
-| in progress | Separate author initials with spaces. |
-| | Wrap lowercase hyphenated names in braces. |
+| Done | Separate author initials with spaces. |
+| Done | Wrap lowercase hyphenated names in braces. |
 | | Wrap all-capital abbreviations in the title in braces. |
 | | Do not wrap the entire title in double braces. |
 | | Use three-letter abbreviations for months. |
 | | Use an en-dash between pages in a range. |
 | | Double check pages that start with page 1. |
-| | DOIs should not be URLs. |
+| Done | DOIs should not be URLs. |
+| | URL entries should not contain DOIs. |
 | | Wrap URLs in a `\url{}` command. |

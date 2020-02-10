@@ -6,7 +6,7 @@ import os.path
 import sys
 
 import bibcheck.reporters
-import bibcheck.checks.author_initials as author_initials
+import bibcheck.checks.author as author
 
 
 BIBTEX_FILE = "bibtex"
@@ -80,7 +80,7 @@ def _check_files(files: list) -> None:
 
 def _check_bibtex_lines(reporter, lines, file_path) -> None:
     for line_number, line in enumerate(lines, start=1):
-        issue = author_initials.check(
+        issue = author.check(
             line, bibcheck.issue.Context(file_path, line_number)
         )
         if issue:
