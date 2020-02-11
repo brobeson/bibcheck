@@ -2,7 +2,7 @@
 
 import unittest
 import bibcheck.checker
-import bibcheck.checks.dois as dois
+import bibcheck.checks.doi
 
 
 class IssueTest(unittest.TestCase):
@@ -10,7 +10,7 @@ class IssueTest(unittest.TestCase):
 
     def test_class(self):
         """Test the Issue class."""
-        issue = dois.Issue("bibliography.bib", 34)
+        issue = bibcheck.checks.doi.Issue("bibliography.bib", 34)
         self.assertEqual(issue.file_path, "bibliography.bib")
         self.assertEqual(issue.line_number, 34)
         self.assertEqual(issue.message, "DOI entries should just contain the DOI.")
@@ -18,6 +18,10 @@ class IssueTest(unittest.TestCase):
 
 class CheckTest(unittest.TestCase):
     """Test cases for the check() function."""
+
+    def __init__(self, methodName="runTest"):
+        super().__init__(methodName)
+        self.checker = bibcheck.checks.doi.DoiChecker()
 
     def test_ok_lines(self):
         """Test BibTeX lines that should not fail the check."""
@@ -27,7 +31,7 @@ class CheckTest(unittest.TestCase):
         ]
         for line in lines:
             with self.subTest():
-                self.assertIsNone(dois.check(line))
+                self.assertFalse(self.checker.check(line))
 
     def test_bad_lines(self):
         """Test BibTeX lines that should fail the check."""
@@ -44,7 +48,7 @@ class CheckTest(unittest.TestCase):
         ]
         for line in lines:
             with self.subTest():
-                issue = dois.check(line)
+                issue = self.checker.check(line)
                 self.assertIsNotNone(issue)
                 self.assertEqual(issue.file_path, "references.bib")
                 self.assertEqual(issue.line_number, 11)
