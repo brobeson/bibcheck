@@ -7,6 +7,8 @@ import sys
 
 import bibcheck.reporters
 import bibcheck.checks.author
+import bibcheck.checks.doi
+import bibcheck.checks.title
 
 
 BIBTEX_FILE = "bibtex"
@@ -79,11 +81,15 @@ def _check_files(files: list) -> None:
 
 
 def _check_bibtex_lines(reporter, lines, file_path) -> None:
-    checkers = [bibcheck.checks.author.AuthorChecker()]
+    checkers = [
+        bibcheck.checks.author.AuthorChecker(),
+        bibcheck.checks.doi.DoiChecker(),
+        bibcheck.checks.title.TitleChecker(),
+    ]
     for line_number, line in enumerate(lines, start=1):
         for checker in checkers:
-            issue = checker.check(bibcheck.checker.Line(line, file_path, line_number))
-            if issue:
+            issues = checker.check(bibcheck.checker.Line(line, file_path, line_number))
+            for issue in issues:
                 reporter.report_issue(issue)
 
 

@@ -43,6 +43,9 @@ class CheckTest(unittest.TestCase):
             bibcheck.checker.Line(
                 "author={Shakespeare, William},", "references.bib", 11
             ),
+            bibcheck.checker.Line(
+                "title={Partial Adversarial Domain Adaptation},", "references.bib", 11
+            ),
         ]
         for line in lines:
             with self.subTest():

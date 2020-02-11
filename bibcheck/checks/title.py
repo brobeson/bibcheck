@@ -32,7 +32,9 @@ class TitleChecker(bibcheck.checker.Checker):  # pylint: disable=too-few-public-
     """
 
     def __init__(self):
-        self.__all_caps_regex = re.compile(r'title\s*=\s*[{"].*[^{][A-Z0-9]+[^}].*["}]')
+        self.__all_caps_regex = re.compile(
+            r'title\s*=\s*[{"].*[^{][A-Z0-9][A-Z0-9]+[^}].*["}]'
+        )
 
     def check(self, line: bibcheck.checker.Line):
         """
