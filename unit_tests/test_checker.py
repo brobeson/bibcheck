@@ -1,4 +1,4 @@
-"""Unit test for the bibcheck.issue module."""
+"""Unit test for the bibcheck.checker module."""
 
 import unittest
 
