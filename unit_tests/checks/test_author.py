@@ -2,7 +2,7 @@
 
 import unittest
 import bibcheck.checker
-import bibcheck.checks.author as author
+import bibcheck.checks.author
 
 
 class IssuesTest(unittest.TestCase):
@@ -10,14 +10,14 @@ class IssuesTest(unittest.TestCase):
 
     def test_intials_issue(self):
         """Test the InitialsIssue class."""
-        issue = author.InitialsIssue("bibliography.bib", 34)
+        issue = bibcheck.checks.author.InitialsIssue("bibliography.bib", 34)
         self.assertEqual(issue.file_path, "bibliography.bib")
         self.assertEqual(issue.line_number, 34)
         self.assertEqual(issue.message, "Author initials must be separated by a space.")
 
     def test_hyphenated_issue(self):
         """Test the HyphenatedIssue class."""
-        issue = author.HyphenatedIssue("bibliography.bib", 34)
+        issue = bibcheck.checks.author.HyphenatedIssue("bibliography.bib", 34)
         self.assertEqual(issue.file_path, "bibliography.bib")
         self.assertEqual(issue.line_number, 34)
         self.assertEqual(
@@ -28,6 +28,10 @@ class IssuesTest(unittest.TestCase):
 
 class CheckTest(unittest.TestCase):
     """Test cases for the check() function."""
+
+    def __init__(self, methodName="runTest"):
+        super().__init__(methodName)
+        self.checker = bibcheck.checks.author.AuthorChecker()
 
     def test_initials_ok(self):
         """Test author lines that do not have issues with initial spaces."""
@@ -48,7 +52,7 @@ class CheckTest(unittest.TestCase):
         ]
         for line in lines:
             with self.subTest():
-                self.assertFalse(author.check(line))
+                self.assertFalse(self.checker.check(line))
 
     def test_initials_bad(self):
         """Test author lines that have issues with initial spaces."""
@@ -75,7 +79,7 @@ class CheckTest(unittest.TestCase):
         ]
         for line in lines:
             with self.subTest():
-                issues = author.check(line)
+                issues = self.checker.check(line)
                 self.assertEqual(len(issues), 1)
                 self.assertIsNotNone(issues[0])
                 self.assertEqual(issues[0].file_path, "references.bib")
@@ -99,11 +103,11 @@ class CheckTest(unittest.TestCase):
         ]
         for line in lines:
             with self.subTest():
-                self.assertFalse(author.check(line))
+                self.assertFalse(self.checker.check(line))
 
     def test_hyphens_bad(self):
         """Test author lines that have issues with hyphenated names."""
-        issues = author.check(
+        issues = self.checker.check(
             bibcheck.checker.Line(
                 "author={Shakespeare, Wil-liam}", "references.bib", 11
             )
