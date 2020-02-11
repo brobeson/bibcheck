@@ -79,9 +79,7 @@ def _check_files(files: list) -> None:
 
 
 def _check_bibtex_lines(reporter, lines, file_path) -> None:
-    checkers = [
-        bibcheck.checks.author.AuthorChecker()
-    ]
+    checkers = [bibcheck.checks.author.AuthorChecker()]
     for line_number, line in enumerate(lines, start=1):
         for checker in checkers:
             issue = checker.check(bibcheck.checker.Line(line, file_path, line_number))
