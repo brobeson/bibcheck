@@ -4,8 +4,6 @@ import re
 
 import bibcheck.checker
 
-ALL_CAPS_REGEX = re.compile(r'title\s*=\s*[{"].*[^{][A-Z0-9]+[^}].*["}]')
-
 
 class AllCapsIssue(bibcheck.checker.Issue):
     """Represents an issue words in all capitals, but not wrapped in braces."""
@@ -25,25 +23,35 @@ class AllCapsIssue(bibcheck.checker.Issue):
 #        return "Author names with hyphenated lowercase should use braces: Na-me -> Na{-me}"
 
 
-def check(line: bibcheck.checker.Line):
+class TitleChecker(bibcheck.checker.Checker):  # pylint: disable=too-few-public-methods
     """
-    Check if a title line contains any problems.
+    Check lines for problems with titles.
 
-    :param bibcheck.checker.Line context: The line of text to check, along with file context
-        information.
-    :return: ``None`` if the given ``line`` passes the check.
-    :return: A list of issues if any problems are found.
-    :rtype: bibcheck.checks.author.Issue
+    1. Words in a title that are all uppercase should be wrapped in braces: title={A Novel {GPU}
+       Architecture} instead of title={A Novel GPU Architecture}.
     """
-    issues = []
-    if ALL_CAPS_REGEX.search(line.text):
-        issues.append(
-            bibcheck.checks.title.AllCapsIssue(line.file_path, line.line_number)
-        )
-    # if HYPHENATED_REGEX.search(line.text):
-    #    issues.append(
-    #        bibcheck.checks.author.HyphenatedIssue(
-    #            line.file_path, line.line_number
-    #        )
-    #    )
-    return issues
+
+    def __init__(self):
+        self.__all_caps_regex = re.compile(r'title\s*=\s*[{"].*[^{][A-Z0-9]+[^}].*["}]')
+
+    def check(self, line: bibcheck.checker.Line):
+        """
+        Check if a title line contains any problems.
+
+        :param bibcheck.checker.Line context: The line of text to check, along with file context
+            information.
+        :return: A list of issues if any problems are found.
+        :rtype: list of bibcheck.checks.author.Issue objects.
+        """
+        issues = []
+        if self.__all_caps_regex.search(line.text):
+            issues.append(
+                bibcheck.checks.title.AllCapsIssue(line.file_path, line.line_number)
+            )
+        # if HYPHENATED_REGEX.search(line.text):
+        #    issues.append(
+        #        bibcheck.checks.author.HyphenatedIssue(
+        #            line.file_path, line.line_number
+        #        )
+        #    )
+        return issues

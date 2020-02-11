@@ -2,7 +2,7 @@
 
 import unittest
 import bibcheck.checker
-import bibcheck.checks.title as title
+import bibcheck.checks.title
 
 
 class IssuesTest(unittest.TestCase):
@@ -10,7 +10,7 @@ class IssuesTest(unittest.TestCase):
 
     def test_intials_issue(self):
         """Test the AllCapsIssue class."""
-        issue = title.AllCapsIssue("bibliography.bib", 34)
+        issue = bibcheck.checks.title.AllCapsIssue("bibliography.bib", 34)
         self.assertEqual(issue.file_path, "bibliography.bib")
         self.assertEqual(issue.line_number, 34)
         self.assertEqual(
@@ -32,6 +32,10 @@ class IssuesTest(unittest.TestCase):
 class CheckTest(unittest.TestCase):
     """Test cases for the check() function."""
 
+    def __init__(self, methodName="runTest"):
+        super().__init__(methodName)
+        self.checker = bibcheck.checks.title.TitleChecker()
+
     def test_all_caps_ok(self):
         """Test title lines that do not have issues with all capital words."""
         lines = [
@@ -42,7 +46,7 @@ class CheckTest(unittest.TestCase):
         ]
         for line in lines:
             with self.subTest():
-                self.assertFalse(title.check(line))
+                self.assertFalse(self.checker.check(line))
 
     def test_all_cpas_bad(self):
         """Test title lines that have issues with words in all capital letters."""
@@ -52,7 +56,7 @@ class CheckTest(unittest.TestCase):
         ]
         for line in lines:
             with self.subTest():
-                issues = title.check(line)
+                issues = self.checker.check(line)
                 self.assertEqual(len(issues), 1)
                 self.assertIsNotNone(issues[0])
                 self.assertEqual(issues[0].file_path, "references.bib")
