@@ -1,6 +1,6 @@
 """Reporter classes for BibCheck."""
 
-import bibcheck.issue
+from bibcheck.checker import Issue
 
 
 class DefaultReporter:  # pylint: disable=too-few-public-methods
@@ -14,7 +14,7 @@ class DefaultReporter:  # pylint: disable=too-few-public-methods
 
     """
 
-    def report_issue(self, issue: bibcheck.issue.Issue):
+    def report_issue(self, issue: Issue):
         # pylint: disable=no-self-use
         """Report an issue.
 

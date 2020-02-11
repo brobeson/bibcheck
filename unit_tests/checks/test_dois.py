@@ -1,7 +1,7 @@
 """Unit test for the author initials check."""
 
 import unittest
-import bibcheck.issue
+import bibcheck.checker
 import bibcheck.checks.dois as dois
 
 
@@ -21,35 +21,30 @@ class CheckTest(unittest.TestCase):
 
     def test_ok_lines(self):
         """Test BibTeX lines that should not fail the check."""
-        cases = [
-            # (test line, test context)
-            ("  title={Hamlet},", bibcheck.issue.Context("references.bib", 10)),
-            ("  doi={10.1109/5.771073},", bibcheck.issue.Context("references.bib", 11)),
+        lines = [
+            bibcheck.checker.Line("  title={Hamlet},", "references.bib", 10),
+            bibcheck.checker.Line("  doi={10.1109/5.771073},", "references.bib", 11),
         ]
-        for case in cases:
+        for line in lines:
             with self.subTest():
-                self.assertIsNone(dois.check(case[0], case[1]))
+                self.assertIsNone(dois.check(line))
 
     def test_bad_lines(self):
         """Test BibTeX lines that should fail the check."""
-        cases = [
-            # (test line, test context)
-            (
-                "  doi={https://doi.org/10.1109/5.771073},",
-                bibcheck.issue.Context("references.bib", 11),
+        lines = [
+            bibcheck.checker.Line(
+                "doi={https://doi.org/10.1109/5.771073},", "references.bib", 11
             ),
-            (
-                "  doi = {https://doi.org/10.1109/5.771073},",
-                bibcheck.issue.Context("references.bib", 11),
+            bibcheck.checker.Line(
+                "doi = {https://doi.org/10.1109/5.771073},", "references.bib", 11
             ),
-            (
-                '  doi = "https://doi.org/10.1109/5.771073",',
-                bibcheck.issue.Context("references.bib", 11),
+            bibcheck.checker.Line(
+                'doi = "https://doi.org/10.1109/5.771073",', "references.bib", 11
             ),
         ]
-        for case in cases:
+        for line in lines:
             with self.subTest():
-                issue = dois.check(case[0], case[1])
+                issue = dois.check(line)
                 self.assertIsNotNone(issue)
                 self.assertEqual(issue.file_path, "references.bib")
                 self.assertEqual(issue.line_number, 11)

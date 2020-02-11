@@ -1,7 +1,7 @@
 """Unit test for the author initials check."""
 
 import unittest
-import bibcheck.issue
+import bibcheck.checker
 import bibcheck.checks.author as author
 
 
@@ -31,66 +31,51 @@ class CheckTest(unittest.TestCase):
 
     def test_initials_ok(self):
         """Test author lines that do not have issues with initial spaces."""
-        cases = [
-            # (test line, test context)
-            ("  title={Hamlet},", bibcheck.issue.Context("references.bib", 10)),
-            (
-                "  author={Shakespeare, William},",
-                bibcheck.issue.Context("references.bib", 11),
+        lines = [
+            bibcheck.checker.Line("title={Hamlet},", "references.bib", 10),
+            bibcheck.checker.Line(
+                "author={Shakespeare, William},", "references.bib", 11
             ),
-            (
-                "  author={Shakespeare, W. A.},",
-                bibcheck.issue.Context("references.bib", 11),
+            bibcheck.checker.Line("author={Shakespeare, W. A.},", "references.bib", 11),
+            bibcheck.checker.Line(
+                "author={Shakespeare, William and Bacon, Francis},",
+                "references.bib",
+                11,
             ),
-            (
-                "  author={Shakespeare, William and Bacon, Francis},",
-                bibcheck.issue.Context("references.bib", 11),
-            ),
-            (
-                "  title={Hamlet}, author={Shakespeare, William},",
-                bibcheck.issue.Context("references.bib", 10),
+            bibcheck.checker.Line(
+                "title={Hamlet}, author={Shakespeare, William},", "references.bib", 10
             ),
         ]
-        for case in cases:
+        for line in lines:
             with self.subTest():
-                self.assertFalse(author.check(case[0], case[1]))
+                self.assertFalse(author.check(line))
 
     def test_initials_bad(self):
         """Test author lines that have issues with initial spaces."""
-        cases = [
-            # (test line, test context)
-            (
-                "  author={Shakespeare, W.A.},",
-                bibcheck.issue.Context("references.bib", 11),
+        lines = [
+            bibcheck.checker.Line("author={Shakespeare, W.A.},", "references.bib", 11),
+            bibcheck.checker.Line(
+                "author={Shakespeare, W.A. and Bacon, Francis},", "references.bib", 11
             ),
-            (
-                "  author={Shakespeare, W.A. and Bacon, Francis},",
-                bibcheck.issue.Context("references.bib", 11),
+            bibcheck.checker.Line(
+                "author={Shakespeare, W. A. and Bacon, F.A.},", "references.bib", 11
             ),
-            (
-                "  author={Shakespeare, W. A. and Bacon, F.A.},",
-                bibcheck.issue.Context("references.bib", 11),
+            bibcheck.checker.Line(
+                "title={Hamlet}, author={Shakespeare, W.A.},", "references.bib", 11
             ),
-            (
-                "  title={Hamlet}, author={Shakespeare, W.A.},",
-                bibcheck.issue.Context("references.bib", 11),
+            bibcheck.checker.Line(
+                "title={Hamlet}, author={Shakespeare, WA.},", "references.bib", 11
             ),
-            (
-                "  title={Hamlet}, author={Shakespeare, WA.},",
-                bibcheck.issue.Context("references.bib", 11),
+            bibcheck.checker.Line(
+                "title={Hamlet}, author={Shakespeare, W.A},", "references.bib", 11
             ),
-            (
-                "  title={Hamlet}, author={Shakespeare, W.A},",
-                bibcheck.issue.Context("references.bib", 11),
-            ),
-            (
-                "  title={Hamlet}, author={Shakespeare, WA},",
-                bibcheck.issue.Context("references.bib", 11),
+            bibcheck.checker.Line(
+                "title={Hamlet}, author={Shakespeare, WA},", "references.bib", 11
             ),
         ]
-        for case in cases:
+        for line in lines:
             with self.subTest():
-                issues = author.check(case[0], case[1])
+                issues = author.check(line)
                 self.assertEqual(len(issues), 1)
                 self.assertIsNotNone(issues[0])
                 self.assertEqual(issues[0].file_path, "references.bib")
@@ -101,20 +86,27 @@ class CheckTest(unittest.TestCase):
 
     def test_hyphens_ok(self):
         """Test author lines that do not have issues with hyphenated names."""
-        cases = [
-            ("author={Shakespeare, William}", bibcheck.issue.Context("references.bib", 11)),
-            ("author={Shakespeare, Wil-{liam}", bibcheck.issue.Context("references.bib", 11)),
-            ("author={Shakespeare, Wil-Liam", bibcheck.issue.Context("references.bib", 11)),
+        lines = [
+            bibcheck.checker.Line(
+                "author={Shakespeare, William}", "references.bib", 11
+            ),
+            bibcheck.checker.Line(
+                "author={Shakespeare, Wil-{liam}", "references.bib", 11
+            ),
+            bibcheck.checker.Line(
+                "author={Shakespeare, Wil-Liam", "references.bib", 11
+            ),
         ]
-        for case in cases:
+        for line in lines:
             with self.subTest():
-                self.assertFalse(author.check(case[0], case[1]))
+                self.assertFalse(author.check(line))
 
     def test_hyphens_bad(self):
         """Test author lines that have issues with hyphenated names."""
         issues = author.check(
-            "author={Shakespeare, Wil-liam}",
-            bibcheck.issue.Context("references.bib", 11)
+            bibcheck.checker.Line(
+                "author={Shakespeare, Wil-liam}", "references.bib", 11
+            )
         )
         self.assertEqual(len(issues), 1)
         self.assertIsNotNone(issues[0])

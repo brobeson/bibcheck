@@ -1,7 +1,7 @@
 """Unit test for the title initials check."""
 
 import unittest
-import bibcheck.issue
+import bibcheck.checker
 import bibcheck.checks.title as title
 
 
@@ -34,28 +34,25 @@ class CheckTest(unittest.TestCase):
 
     def test_all_caps_ok(self):
         """Test title lines that do not have issues with all capital words."""
-        cases = [
-            # (test line, test context)
-            ("  title={Hamlet},", bibcheck.issue.Context("references.bib", 10)),
-            (
-                "author={Shakespeare, William},",
-                bibcheck.issue.Context("references.bib", 11),
+        lines = [
+            bibcheck.checker.Line("title={Hamlet},", "references.bib", 10),
+            bibcheck.checker.Line(
+                "author={Shakespeare, William},", "references.bib", 11
             ),
         ]
-        for case in cases:
+        for line in lines:
             with self.subTest():
-                self.assertFalse(title.check(case[0], case[1]))
+                self.assertFalse(title.check(line))
 
     def test_all_cpas_bad(self):
         """Test title lines that have issues with words in all capital letters."""
-        cases = [
-            # (test line, test context)
-            ("title={HAMLET},", bibcheck.issue.Context("references.bib", 11)),
-            ("title={HaMLet},", bibcheck.issue.Context("references.bib", 11)),
+        lines = [
+            bibcheck.checker.Line("title={HAMLET},", "references.bib", 11),
+            bibcheck.checker.Line("title={HaMLet},", "references.bib", 11),
         ]
-        for case in cases:
+        for line in lines:
             with self.subTest():
-                issues = title.check(case[0], case[1])
+                issues = title.check(line)
                 self.assertEqual(len(issues), 1)
                 self.assertIsNotNone(issues[0])
                 self.assertEqual(issues[0].file_path, "references.bib")
