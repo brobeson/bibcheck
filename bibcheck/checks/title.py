@@ -14,13 +14,13 @@ class AllCapsIssue(bibcheck.checker.Issue):
         return "Title words in all capital letters should be wrapped in braces."
 
 
-# class HyphenatedIssue(bibcheck.checker.Issue):
-#    """Represents an issue with hyphenated lowercase names that are not in braces."""
-#
-#    @property
-#    def message(self):
-#        """Get the message for this issue."""
-#        return "Author names with hyphenated lowercase should use braces: Na-me -> Na{-me}"
+class DoubleBraceIssue(bibcheck.checker.Issue):
+    """Represents an issue with a title being wrapped in braces."""
+
+    @property
+    def message(self):
+        """Get the message for this issue."""
+        return "Do not wrap whole titles in braces."
 
 
 class TitleChecker(bibcheck.checker.Checker):  # pylint: disable=too-few-public-methods
@@ -35,6 +35,7 @@ class TitleChecker(bibcheck.checker.Checker):  # pylint: disable=too-few-public-
         self.__all_caps_regex = re.compile(
             r'title\s*=\s*[{"].*[^{][A-Z0-9][A-Z0-9]+[^}].*["}]'
         )
+        self.__whole_brace_regex = re.compile(r'title\s*=\s*[{"]{.+}["}]')
 
     def check(self, line: bibcheck.checker.Line):
         """
@@ -50,10 +51,8 @@ class TitleChecker(bibcheck.checker.Checker):  # pylint: disable=too-few-public-
             issues.append(
                 bibcheck.checks.title.AllCapsIssue(line.file_path, line.line_number)
             )
-        # if HYPHENATED_REGEX.search(line.text):
-        #    issues.append(
-        #        bibcheck.checks.author.HyphenatedIssue(
-        #            line.file_path, line.line_number
-        #        )
-        #    )
+        if self.__whole_brace_regex.search(line.text):
+            issues.append(
+                bibcheck.checks.title.DoubleBraceIssue(line.file_path, line.line_number)
+            )
         return issues

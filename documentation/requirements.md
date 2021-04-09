@@ -20,9 +20,9 @@ John Owens.
 |:---|:---|
 | Done | Separate author initials with spaces. |
 | Done | Wrap lowercase hyphenated names in braces. |
-| | Wrap all-capital abbreviations in the title in braces. |
-| | Do not wrap the entire title in double braces. |
-| | Use three-letter abbreviations for months. |
+| Done | Wrap all-capital abbreviations in the title in braces. |
+| Done | Do not wrap the entire title in double braces. |
+| In Progress | Use three-letter abbreviations for months. |
 | | Use an en-dash between pages in a range. |
 | | Double check pages that start with page 1. |
 | Done | DOIs should not be URLs. |

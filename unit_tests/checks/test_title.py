@@ -68,3 +68,20 @@ class CheckTest(unittest.TestCase):
                     issues[0].message,
                     "Title words in all capital letters should be wrapped in braces.",
                 )
+
+    def test_double_brace_bad(self):
+        """Test title lines that have issues with words in all capital letters."""
+        lines = [
+            bibcheck.checker.Line("title={{Hamlet}},", "references.bib", 11),
+            bibcheck.checker.Line('title="{Hamlet}",', "references.bib", 11),
+        ]
+        for line in lines:
+            with self.subTest():
+                issues = self.checker.check(line)
+                self.assertEqual(len(issues), 1)
+                self.assertIsNotNone(issues[0])
+                self.assertEqual(issues[0].file_path, "references.bib")
+                self.assertEqual(issues[0].line_number, 11)
+                self.assertEqual(
+                    issues[0].message, "Do not wrap whole titles in braces."
+                )
